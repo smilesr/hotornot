@@ -3,8 +3,6 @@ require 'twilio-ruby'
 class TextResponseController < ApplicationController
    include Webhookable
 
-  def incoming
-
   def respond
       response = Twilio::TwiML::Response.new do |r|
         body_request = params[:Body]
