@@ -12,6 +12,7 @@ class WeatherController < ApplicationController
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
       @temperature = @response["current_observation"]["temp_f"]
+      r.Message "What is the current temperature in #{@city}, #{@state}"
     end
     render_twiml response
   end
