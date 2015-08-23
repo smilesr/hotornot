@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
+  get 'weather/get_weather', to: 'weather#get_weather'
+  post 'notifications/incoming', to: 'notifications#incoming'
   get '/', to: 'user#hello'
   post 'twilio/voice', to: 'twilio#voice'
   post 'notifications/notify', to: 'notifications#notify'

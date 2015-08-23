@@ -78,5 +78,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   #for twilio
   # config.middleware.use Rack::TwilioWebhookAuthentication, Rails.application.secrets.twilio_auth_token, '/voice'
-  config.middleware.use Rack::TwilioWebhookAuthentication, ENV['TWILIO_AUTH_TOKEN'], '/voice'
+ config.middleware.use Rack::TwilioWebhookAuthentication, ENV['TWILIO_AUTH_TOKEN'], '/voice'
 end
