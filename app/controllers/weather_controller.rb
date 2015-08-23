@@ -10,6 +10,7 @@ class WeatherController < ApplicationController
     else
       access_answer
     end
+  end
 
   def get_weather
     # response = Twilio::TwiML::Response.new do |r|
