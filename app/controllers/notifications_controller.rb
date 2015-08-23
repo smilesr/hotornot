@@ -15,9 +15,7 @@ class NotificationsController < ApplicationController
 
     client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
     message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
-      # binding.pry
-      # text_message
-    # , media_url: 'http://linode.rabasa.com/yoda.gif'
+
     end
 
     render :notify
