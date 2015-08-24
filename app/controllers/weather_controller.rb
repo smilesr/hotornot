@@ -53,9 +53,28 @@ class WeatherController < ApplicationController
   end
 
     def send_question
-      response = Twilio::TwiML::Response.new do |r|
-        r.Message "What is the current temperature in #{@city}, #{@state}"
-      end
+    # phone_number = []
+    # phone_number = params[:phone_number].split(",")
+
+   text_message = "What is the current temperature in #{@city}, #{@state}?"
+   
+
+    phone_number = ['(678)491-7762']
+      # , '(404)641-7242']
+    phone_number.each do |i|
+
+    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
+    message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
+
+    end
+
+    render :notify
   end
+
+  #   def send_question
+  #     response = Twilio::TwiML::Response.new do |r|
+  #       r.Message "What is the current temperature in #{@city}, #{@state}"
+  #     end
+  # end
 
 end
