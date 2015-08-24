@@ -68,7 +68,6 @@ class WeatherController < ApplicationController
 
     end
 
-    render :notify
   end
 
   #   def send_question
