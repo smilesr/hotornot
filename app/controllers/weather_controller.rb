@@ -4,7 +4,7 @@ class WeatherController < ApplicationController
 
   def route_me
     @body_request = params[:Body].split(",")
-    if @body_request.length == 2 && @body_request[0] == "q" 
+    if @body_request.length == 3 && @body_request[0] == "q" 
       get_weather
     else
       access_answer
