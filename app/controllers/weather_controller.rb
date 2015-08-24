@@ -28,11 +28,7 @@ class WeatherController < ApplicationController
 #     # render_twiml response
 #   end
 
-#   def send_question
-#       response = Twilio::TwiML::Response.new do |r|
-#         r.Message "What is the current temperature in #{@city}, #{@state}"
-#       end
-#   end
+
 
 #   def access_answer
 #   end
@@ -50,9 +46,16 @@ class WeatherController < ApplicationController
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
       @temperature = @response["current_observation"]["temp_f"]
+      send_question
       # r.Message "What is the current temperature in #{@city}, #{@state}"
     end
     render_twiml response
+  end
+
+    def send_question
+      response = Twilio::TwiML::Response.new do |r|
+        r.Message "What is the current temperature in #{@city}, #{@state}"
+      end
   end
 
 end
