@@ -45,8 +45,8 @@ class WeatherController < ApplicationController
       # @state = params[:state]
       # @city = params[:city]
       body_request = params[:Body].split(",")
-      @city = body_request[2]
-      @state = body_request[1]
+      @city = body_request[1]
+      @state = body_request[0]
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
       @temperature = @response["current_observation"]["temp_f"]
