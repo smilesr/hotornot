@@ -13,7 +13,7 @@ class WeatherController < ApplicationController
   # end
 
   def get_weather
-    # response = Twilio::TwiML::Response.new do |r|
+    response = Twilio::TwiML::Response.new do |r|
       # @state = params[:state]
       # @city = params[:city]
       body_request = params[:Body].split(",")
@@ -24,7 +24,7 @@ class WeatherController < ApplicationController
       @temperature = @response["current_observation"]["temp_f"]
       send_question
       # r.Message "What is the current temperature in #{@city}, #{@state}"
-    # end
+    end
     # render_twiml response
   end
 
