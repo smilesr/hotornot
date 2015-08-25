@@ -86,6 +86,5 @@ class WeatherController < ApplicationController
     end
     render_twiml response
   end
-
+ end
 end
-
