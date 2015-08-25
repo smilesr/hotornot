@@ -39,13 +39,16 @@ class WeatherController < ApplicationController
     response = Twilio::TwiML::Response.new do |r|
       # @state = params[:state]
       # @city = params[:city]
+      wd = WeatherData.new
       body_request = params[:Body].split(",")
       @city = body_request[2]
       @state = body_request[1]
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
       @temperature = @response["current_observation"]["temp_f"]
-      wd=Weather_Data.create(:temperature => @temperature, :city=> @city, :state => @state)
+      # wd=WeatherData.create(:temperature => @temperature, :city=> @city, :state => @state)
+      wd.update(:temperature => @temperature, :city=> @city, :state => @state)
+      wd.save
       send_question
       # r.Message "What is the current temperature in #{@city}, #{@state}"
     end
