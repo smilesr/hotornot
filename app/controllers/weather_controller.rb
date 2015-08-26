@@ -5,8 +5,8 @@ class WeatherController < ApplicationController
   def route_me
     @body_request = params[:Body].split(",")
 
-
-    if @body_request.length == 3 && @body_request[0] == "q" 
+    if @body_request.length == 2
+    # if @body_request.length == 3 && @body_request[0] == "q" 
       get_weather
     else
       access_answer
@@ -39,27 +39,26 @@ class WeatherController < ApplicationController
 
   def get_weather
     response = Twilio::TwiML::Response.new do |r|
-      # @state = params[:state]
-      # @city = params[:city]
-      wd = WeatherData.new
+     
       body_request = params[:Body].split(",")
-      @city = body_request[2]
+      @city = body_request[0]
       @state = body_request[1]
+
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
       @temperature = @response["current_observation"]["temp_f"]
-      # wd=WeatherData.create(:temperature => @temperature, :city=> @city, :state => @state)
+      
+      wd = WeatherData.new
       wd.update(:temperature => @temperature, :city=> @city, :state => @state)
       wd.save
+      
       send_question
-      # r.Message "What is the current temperature in #{@city}, #{@state}"
+     
     end
     render_twiml response
   end
 
   def send_question
-    # phone_number = []
-    # phone_number = params[:phone_number].split(",")
 
       text_message = "What is the current temperature in #{@city}, #{@state}?"
    
