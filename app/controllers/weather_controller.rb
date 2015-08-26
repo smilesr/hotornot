@@ -4,6 +4,8 @@ class WeatherController < ApplicationController
 
   def route_me
     @body_request = params[:Body].split(",")
+
+
     if @body_request.length == 3 && @body_request[0] == "q" 
       get_weather
     else
@@ -66,15 +68,16 @@ class WeatherController < ApplicationController
       # , '(404)641-7242']
       phone_number.each do |i|
 
-      client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
-      message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
-
+        client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
+        message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
+      end
   end
 
   def access_answer
-    temperature_guess = params[:Body]
+    temperature_guess = params[:Body].to_i
+   
     temperature_difference = temperature_guess - WeatherData.last.temperature
-    
+     binding.pry
     response = Twilio::TwiML::Response.new do |r|
       if temperature_difference == 0
         r.message "Your got it exactly right!!!"
@@ -86,5 +89,17 @@ class WeatherController < ApplicationController
     end
     render_twiml response
   end
- end
+
+
+  # def route_me
+  #   @body_request = params[:Body].split(",")
+
+  #   if @body_request.length == 3 && @body_request[0] == "q" 
+  #     get_weather
+  #   else
+  #     access_answer
+  #   end
+  # end
+
+
 end
