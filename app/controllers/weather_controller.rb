@@ -64,8 +64,7 @@ class WeatherController < ApplicationController
       text_message = "What is the current temperature in #{@city}, #{@state}?"
    
 
-      phone_number = ['(678)491-7762']
-      # , '(404)641-7242']
+      phone_number = ['(678)491-7762','(404)641-7242']
       phone_number.each do |i|
 
         client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
@@ -83,9 +82,9 @@ class WeatherController < ApplicationController
       if temperature_difference == 0
         r.message "Your got it right!!!"
       elsif temperature_difference < 0
-        r.message "You guessed too low by #{temperature_difference.abs}. The temperature is actually #{actual_temperature} in #{city}"
+        r.message "You guessed too low by #{temperature_difference.abs} degrees. The temperature is actually #{actual_temperature} in #{city}"
       elsif temperature_difference > 0
-        r.message "You guessed too high by #{temperature_difference.abs}.  The temperature is actually #{actual_temperature} in #{city}"
+        r.message "You guessed too high by #{temperature_difference.abs} degrees.  The temperature is actually #{actual_temperature} in #{city}"
       end
     end
     render_twiml response
