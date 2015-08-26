@@ -75,16 +75,17 @@ class WeatherController < ApplicationController
 
   def access_answer
     temperature_guess = params[:Body].to_i
+    actual_temperature = WeatherData.last.temperature
+    city = WeatherData.last.city
+    temperature_difference = (temperature_guess - actual_temperature).round
    
-    temperature_difference = temperature_guess - WeatherData.last.temperature
-     binding.pry
     response = Twilio::TwiML::Response.new do |r|
       if temperature_difference == 0
-        r.message "Your got it exactly right!!!"
+        r.message "Your got it right!!!"
       elsif temperature_difference < 0
-        r.message "You guessed too low by #{temperature_difference.abs}."
+        r.message "You guessed too low by #{temperature_difference.abs}. The temperature is actually #{actual_temperature} in #{city}"
       elsif temperature_difference > 0
-        r.message "You guessed too high by #{temperature_difference}."
+        r.message "You guessed too high by #{temperature_difference.abs}.  The temperature is actually #{actual_temperature} in #{city}"
       end
     end
     render_twiml response
