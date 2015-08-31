@@ -69,7 +69,7 @@ class WeatherController < ApplicationController
     temperature_difference = (temperature_guess - actual_temperature).round
    
     response = Twilio::TwiML::Response.new do |r|
-      if temperature_difference.between(-1,1)
+      if temperature_difference.between?(-1,1)
         r.message "You win! Your answer was exactly right or within one degree."
       elsif temperature_difference < -1
         r.message "You guessed too low by #{temperature_difference.abs} degrees. The temperature is actually #{actual_temperature} in #{city}"
