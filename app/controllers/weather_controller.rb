@@ -4,48 +4,32 @@ class WeatherController < ApplicationController
 
   def route_me
     @body_request = params[:Body].split(",")
+    @requesting_number = params[:From]
+    # "=>"+16784917762",]
 
     if @body_request.length == 2
-    # if @body_request.length == 3 && @body_request[0] == "q" 
       get_weather
-    else
+    elsif @body_request.length ==1
       access_answer
+    else 
+      bad_request
     end
   end
 
-#   def get_weather
-#     response = Twilio::TwiML::Response.new do |r|
-#       # @state = params[:state]
-#       # @city = params[:city]
-#       body_request = params[:Body].split(",")
-#       @city = @body_request[1]
-#       @state = @body_request[0]
-#       weather_key = ENV["WEATHER_KEY"]
-#       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
-#       @temperature = @response["current_observation"]["temp_f"]
-#       send_question
-#       # r.Message "What is the current temperature in #{@city}, #{@state}"
-#     end
-#     # render_twiml response
-#   end
-
-
-
-#   def access_answer
-#   end
-  
-
-# end 
 
   def get_weather
     response = Twilio::TwiML::Response.new do |r|
      
-      body_request = params[:Body].split(",")
-      @city = body_request[0]
-      @state = body_request[1]
+      # body_request = params[:Body].split(",")
+      @city = @body_request[0].capitalize
+      @state = @body_request[1].upcase
 
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
+      if @response.nil?
+        bad_request
+      end
+
       @temperature = (@response["current_observation"]["temp_f"]).round
       wd = WeatherData.new
       wd.update(:temperature => @temperature, :city=> @city, :state => @state)
@@ -57,14 +41,22 @@ class WeatherController < ApplicationController
     render_twiml response
   end
 
+  def bad_request
+      text_message = "The request must be in this format: 'City,State' with no spaces between the City, comma and State.  Please try again."
+      phone_number = @requesting_number.slice(0..1)
+      phone_number.each do |i|
+        client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
+        message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
+      end
+  end
+
+  # def bad_answer
+
+
   def send_question
-
       text_message = "What is the current temperature in #{@city}, #{@state}?"
-   
-
       phone_number = ['(678)491-7762','(404)641-7242']
       phone_number.each do |i|
-
         client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
         message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
       end
@@ -77,11 +69,11 @@ class WeatherController < ApplicationController
     temperature_difference = (temperature_guess - actual_temperature).round
    
     response = Twilio::TwiML::Response.new do |r|
-      if temperature_difference == 0
-        r.message "Your got it right!!!"
-      elsif temperature_difference < 0
+      if temperature_difference.between(-1,1)
+        r.message "You win! Your answer was exactly right or within one degree."
+      elsif temperature_difference < -1
         r.message "You guessed too low by #{temperature_difference.abs} degrees. The temperature is actually #{actual_temperature} in #{city}"
-      elsif temperature_difference > 0
+      elsif temperature_difference > 1
         r.message "You guessed too high by #{temperature_difference.abs} degrees.  The temperature is actually #{actual_temperature} in #{city}"
       end
     end
