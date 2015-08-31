@@ -26,11 +26,12 @@ class WeatherController < ApplicationController
 
       weather_key = ENV["WEATHER_KEY"]
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
-      if @response.nil?
-        bad_request
-      end
+
 
       @temperature = (@response["current_observation"]["temp_f"]).round
+      if @temperature.nil?
+        bad_request
+      end
       wd = WeatherData.new
       wd.update(:temperature => @temperature, :city=> @city, :state => @state)
       wd.save
