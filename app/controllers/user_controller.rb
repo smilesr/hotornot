@@ -1,6 +1,6 @@
 class UserController < ApplicationController
   def hello
-    render text: "I love you Maddybird."
+    
   end
 
   def index
