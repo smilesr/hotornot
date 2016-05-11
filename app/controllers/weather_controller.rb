@@ -2,6 +2,8 @@ require 'twilio-ruby'
 class WeatherController < ApplicationController
   include Webhookable
 
+  skip_before_filter  :verify_authenticity_token
+
   def route_me
     @body_request = params[:Body].split(",")
     @requesting_number = params[:From]
@@ -25,10 +27,12 @@ class WeatherController < ApplicationController
       @state = @body_request[1].upcase
 
       weather_key = ENV["WEATHER_KEY"]
+
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
 
 
       @temperature = (@response["current_observation"]["temp_f"]).round
+      
       if @temperature.nil?
         bad_request
       end
@@ -47,7 +51,7 @@ class WeatherController < ApplicationController
       phone_number = @requesting_number.slice(0..1)
       phone_number.each do |i|
         client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
-        message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
+        message = client.messages.create from: '(678) 247-2394', to: i, body: text_message  
       end
   end
 
@@ -59,7 +63,7 @@ class WeatherController < ApplicationController
       phone_number = ['(678)491-7762','(404)641-7242']
       phone_number.each do |i|
         client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
-        message = client.messages.create from: '(678)212-5314', to: i, body: text_message  
+        message = client.messages.create from: '(678) 247-2394', to: i, body: text_message  
       end
   end
 

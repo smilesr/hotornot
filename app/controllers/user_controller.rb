@@ -1,7 +1,7 @@
 class UserController < ApplicationController
-  def hello
+  # def hello
     
-  end
+  # end
 
   def index
     @users = User.all
