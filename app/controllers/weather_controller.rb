@@ -1,3 +1,4 @@
+require 'pry'
 require 'twilio-ruby'
 class WeatherController < ApplicationController
   include Webhookable
@@ -16,6 +17,7 @@ class WeatherController < ApplicationController
     else 
       bad_request
     end
+  
   end
 
 
@@ -30,7 +32,7 @@ class WeatherController < ApplicationController
 
       @response = HTTParty.get("http://api.wunderground.com/api/#{weather_key}/conditions/q/#{@state}/#{@city}.json")
 
-
+        binding.pry
       @temperature = (@response["current_observation"]["temp_f"]).round
       
       if @temperature.nil?
@@ -39,7 +41,7 @@ class WeatherController < ApplicationController
       wd = WeatherData.new
       wd.update(:temperature => @temperature, :city=> @city, :state => @state)
       wd.save
-      
+
       send_question
      
     end
